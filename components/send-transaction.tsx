@@ -9,51 +9,29 @@ import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 import { toast } from "sonner";
 
 export function SendTransaction() {
-  const { account, signAndSubmitTransaction, network } = useWallet();
+  const { account, signAndSubmitTransaction } = useWallet();
   const [recipient, setRecipient] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Movement network configurations
-  const MOVEMENT_CONFIGS = {
-    mainnet: {
-      chainId: 126,
-      name: "Movement Mainnet",
-      fullnode: "https://full.mainnet.movementinfra.xyz/v1",
-      explorer: "mainnet"
-    },
-    testnet: {
-      chainId: 250,
-      name: "Movement Testnet",
-      fullnode: "https://full.testnet.movementinfra.xyz/v1",
-      explorer: "testnet"
-    }
+  // Movement testnet configuration
+  const TESTNET_CONFIG = {
+    chainId: 250,
+    name: "Movement Testnet",
+    fullnode: "https://full.testnet.movementinfra.xyz/v1",
+    explorer: "testnet"
   };
 
-  // Get the current network config based on chain ID
-  const getCurrentNetworkConfig = () => {
-    if (network?.chainId === 126) {
-      return MOVEMENT_CONFIGS.mainnet;
-    } else if (network?.chainId === 250) {
-      return MOVEMENT_CONFIGS.testnet;
-    }
-    // Default to testnet if unknown
-    return MOVEMENT_CONFIGS.testnet;
-  };
-
-  // Create Aptos client with the current network
+  // Create Aptos client for testnet
   const getAptosClient = () => {
-    const networkConfig = getCurrentNetworkConfig();
-    
     const config = new AptosConfig({ 
       network: Network.CUSTOM,
-      fullnode: networkConfig.fullnode
+      fullnode: TESTNET_CONFIG.fullnode
     });
     return new Aptos(config);
   };
 
   const getExplorerUrl = (txHash: string) => {
-    const networkConfig = getCurrentNetworkConfig();
-    return `https://explorer.movementnetwork.xyz/txn/${txHash}?network=${networkConfig.explorer}`;
+    return `https://explorer.movementnetwork.xyz/txn/${txHash}?network=bardock+testnet`;
   };
 
   const handleSendTransaction = async () => {

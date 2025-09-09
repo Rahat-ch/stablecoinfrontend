@@ -23,10 +23,10 @@ export default function Home() {
           <div className="max-w-2xl mx-auto text-center space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                Movement Network
+                mFUSD Stablecoin
               </h1>
               <p className="text-xl text-muted-foreground">
-                Connect your wallet to start interacting with Movement Network
+                Connect your wallet to manage your collateralized stablecoin positions on Movement Testnet
               </p>
             </div>
 
@@ -41,7 +41,7 @@ export default function Home() {
 
       <footer className="border-t border-border mt-auto">
         <div className="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
-          <p>Movement Network Connect Wallet Template</p>
+          <p>mFUSD - Collateralized Stablecoin on Movement Testnet</p>
         </div>
       </footer>
     </div>

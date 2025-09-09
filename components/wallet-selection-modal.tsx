@@ -50,9 +50,9 @@ export function WalletSelectionModal({ children }: WalletSelectionModalProps) {
         if (selectedWallet?.features?.['aptos:connect']) {
           // Use wallet-standard aptos:connect feature with network info
           const networkInfo = {
-            chainId: 126, // Movement Mainnet
+            chainId: 250, // Movement Testnet
             name: "custom" as const,
-            url: "https://full.mainnet.movementinfra.xyz/v1"
+            url: "https://full.testnet.movementinfra.xyz/v1"
           };
           
           try {
@@ -87,7 +87,7 @@ export function WalletSelectionModal({ children }: WalletSelectionModalProps) {
         <DialogHeader>
           <DialogTitle>Connect Wallet</DialogTitle>
           <DialogDescription>
-            Choose a wallet to connect to Movement Network
+            Choose a wallet to connect to Movement Testnet
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3">

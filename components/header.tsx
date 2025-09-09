@@ -13,7 +13,7 @@ export function Header() {
     <header className="border-b border-border relative">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
-          Movement Network
+          mFUSD
         </Link>
         
         {/* Desktop Navigation */}

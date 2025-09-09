@@ -1,70 +1,41 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { SendTransaction } from "@/components/send-transaction";
-import { SignMessage } from "@/components/sign-message";
-import { SwitchNetwork } from "@/components/switch-network";
+import { StablecoinOperations } from "@/components/stablecoin-operations";
+import { MFUSDStats } from "@/components/mfusd-stats";
 
 export function WalletDemoContent() {
-  const { account, disconnect, network } = useWallet();
+  const { disconnect, network } = useWallet();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   
-  const address = account?.address?.toString() || "";
-  
-  // Parse network from useWallet based on chain ID
-  const getNetworkName = () => {
-    if (!network?.chainId) return "Unknown Network";
-    
-    switch (network.chainId) {
-      case 126:
-        return "Movement Mainnet";
-      case 250:
-        return "Movement Testnet";
-      default:
-        return "Unknown Network";
-    }
-  };
-  
-  const networkConfig = {
-    name: getNetworkName(),
-    chainId: network?.chainId || 0
+  const isTestnet = network?.chainId === 250;
+
+  const handleTransactionSuccess = () => {
+    // Trigger refresh of stats by updating the trigger value
+    setRefreshTrigger(prev => prev + 1);
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold text-foreground">Wallet Connected</h1>
-        <Button variant="outline" onClick={disconnect}>
-          Disconnect Wallet
-        </Button>
+        <h1 className="text-3xl font-bold text-foreground">mFUSD Stablecoin Interface</h1>
+        <div className="flex items-center justify-center gap-4">
+          <Button variant="outline" onClick={disconnect}>
+            Disconnect Wallet
+          </Button>
+          {!isTestnet && (
+            <span className="text-sm text-orange-600 dark:text-orange-400">
+              ⚠️ Please switch to Movement Testnet
+            </span>
+          )}
+        </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Network Status</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Connected Address</p>
-              <p className="font-mono text-sm break-all">{address}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">Current Network</p>
-              <p className="text-sm">
-                {networkConfig.name} (Chain ID: {networkConfig.chainId})
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+      <MFUSDStats refreshTrigger={refreshTrigger} />
 
-        <SwitchNetwork />
-
-        <SignMessage />
-
-        <SendTransaction />
-      </div>
+      <StablecoinOperations onTransactionSuccess={handleTransactionSuccess} />
     </div>
   );
 }
