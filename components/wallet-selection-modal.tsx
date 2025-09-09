@@ -48,15 +48,9 @@ export function WalletSelectionModal({ children }: WalletSelectionModalProps) {
         const selectedWallet = allWallets.aptosWallets.find(w => w.name === walletName);
         
         if (selectedWallet?.features?.['aptos:connect']) {
-          // Use wallet-standard aptos:connect feature with network info
-          const networkInfo = {
-            chainId: 250, // Movement Testnet
-            name: "custom" as const,
-            url: "https://full.testnet.movementinfra.xyz/v1"
-          };
-          
           try {
-            const result = await selectedWallet.features['aptos:connect'].connect(false, networkInfo);
+            // Try connecting without network info first - let wallet handle network
+            const result = await selectedWallet.features['aptos:connect'].connect(false);
             
             // If wallet-standard connection succeeded, now connect via wallet adapter
             if (result.status === "Approved") {
@@ -64,7 +58,7 @@ export function WalletSelectionModal({ children }: WalletSelectionModalProps) {
               setOpen(false);
               return;
             }
-          } catch (connectError) {
+          } catch {
             // Fallback to standard connection
           }
         }
@@ -73,7 +67,7 @@ export function WalletSelectionModal({ children }: WalletSelectionModalProps) {
       // Fallback to standard wallet adapter connection
       await connect(walletName);
       setOpen(false);
-    } catch (error) {
+    } catch {
       // Silent error - wallet adapter will handle error display
     }
   };
@@ -105,6 +99,7 @@ export function WalletSelectionModal({ children }: WalletSelectionModalProps) {
               >
                 <div className="flex items-center space-x-3">
                   {wallet.icon && (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img 
                       src={wallet.icon} 
                       alt={wallet.name} 

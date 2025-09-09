@@ -54,7 +54,7 @@ export function StablecoinOperations({ onTransactionSuccess }: StablecoinOperati
 
   const handleTransaction = async (
     functionName: string,
-    args: any[],
+    args: (string | number)[],
     description: string
   ) => {
     if (!account) {
@@ -113,8 +113,8 @@ export function StablecoinOperations({ onTransactionSuccess }: StablecoinOperati
       if (onTransactionSuccess) {
         onTransactionSuccess();
       }
-    } catch (err: any) {
-      const errorMessage = err.message || `Failed to ${description.toLowerCase()}`;
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || `Failed to ${description.toLowerCase()}`;
       toast.error(errorMessage, {
         id: loadingToast,
       });

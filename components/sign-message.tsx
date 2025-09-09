@@ -50,10 +50,15 @@ export function SignMessage() {
       
       if (typeof response === 'string') {
         signature = response;
-      } else if (response.signature?.data?.data) {
+      } else if (response.signature && typeof response.signature === 'object' && 'data' in response.signature) {
         // Convert byte array to hex string
-        const byteArray = Object.values(response.signature.data.data) as number[];
-        signature = '0x' + byteArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+        const sigData = response.signature as { data?: { data?: number[] } };
+        if (sigData.data?.data) {
+          const byteArray = Object.values(sigData.data.data) as number[];
+          signature = '0x' + byteArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+        } else {
+          signature = JSON.stringify(response.signature);
+        }
       } else if (response.signature) {
         signature = typeof response.signature === 'string' 
           ? response.signature 
@@ -67,15 +72,15 @@ export function SignMessage() {
       toast.success(
         <div className="flex flex-col gap-2">
           <p>Message signed successfully!</p>
-          <p className="text-xs opacity-75">Message: "{message}"</p>
+          <p className="text-xs opacity-75">Message: &ldquo;{message}&rdquo;</p>
         </div>,
         {
           id: loadingToast,
           duration: 5000,
         }
       );
-    } catch (err: any) {
-      const errorMessage = err.message || "Failed to sign message";
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || "Failed to sign message";
       toast.error(errorMessage, {
         id: loadingToast,
       });
@@ -91,7 +96,7 @@ export function SignMessage() {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-muted-foreground">
-          Sign a "gmove" message with your wallet.
+          Sign a &ldquo;gmove&rdquo; message with your wallet.
         </p>
         
         <div className="space-y-2">

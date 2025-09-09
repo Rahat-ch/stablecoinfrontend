@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
@@ -51,7 +51,7 @@ export function MFUSDStats({ refreshTrigger }: { refreshTrigger?: number }) {
     return { status: "Liquidatable", color: "text-red-600 dark:text-red-400" };
   };
 
-  const fetchData = async () => {
+  const fetchData = React.useCallback(async () => {
     if (!account || !isTestnet) return;
 
     setLoading(true);
@@ -105,19 +105,21 @@ export function MFUSDStats({ refreshTrigger }: { refreshTrigger?: number }) {
           totalCollateral: parseInt(statsResult[0] as string),
           totalMinted: parseInt(statsResult[1] as string),
         });
-      } catch (error) {
-        console.error("Error fetching protocol stats:", error);
+      } catch (statsError) {
+        console.error("Error fetching protocol stats:", statsError);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch (fetchError) {
+      console.error("Error fetching data:", fetchError);
     } finally {
       setLoading(false);
     }
-  };
+  }, [account, isTestnet]);
 
   useEffect(() => {
-    fetchData();
-  }, [account, isTestnet, refreshTrigger]);
+    if (account && isTestnet) {
+      fetchData();
+    }
+  }, [account, isTestnet, refreshTrigger, fetchData]);
 
   if (!isTestnet) {
     return null;

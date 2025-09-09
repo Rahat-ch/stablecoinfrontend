@@ -94,7 +94,7 @@ export function SendTransaction() {
               duration: 10000,
             }
           );
-        } catch (waitError) {
+        } catch {
           toast.warning("Transaction submitted but confirmation timed out", {
             id: loadingToast,
             description: "Check the explorer for status",
@@ -105,8 +105,8 @@ export function SendTransaction() {
           });
         }
       }
-    } catch (err: any) {
-      const errorMessage = err.message || "Failed to send transaction";
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || "Failed to send transaction";
       toast.error(errorMessage, {
         id: loadingToast,
       });
